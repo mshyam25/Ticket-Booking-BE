@@ -1,0 +1,11 @@
+{
+  "name": "ticket-booking-backend",
+  "version": "1.0.0",
+  "description": "Backend for Ticket Booking App",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Shyam",
+  "license": "ISC"
+}
