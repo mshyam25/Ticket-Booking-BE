@@ -3,9 +3,24 @@
   "version": "1.0.0",
   "description": "Backend for Ticket Booking App",
   "main": "server.js",
+  "type": "module",
   "scripts": {
+    "start": "node server.js",
+    "server": "nodemon server.js",
+    "dataimport": "node seeder.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Shyam",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "express-async-handler": "^1.2.0",
+    "moment": "^2.29.3",
+    "mongoose": "^6.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
 }
