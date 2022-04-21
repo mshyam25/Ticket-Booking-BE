@@ -6,6 +6,7 @@ import {
 } from '../controller-functions/theatreController.js'
 
 const router = express.Router()
+// /theatres
 
 router.route('/list').get(getAllTheatres)
 router.route('/:id').get(getTheatreById)
