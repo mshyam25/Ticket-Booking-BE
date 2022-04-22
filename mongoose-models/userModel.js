@@ -25,14 +25,6 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    securityQuestion: {
-      type: String,
-      required: true,
-    },
-    securityQuestionAnswer: {
-      type: String,
-      required: true,
-    },
   },
   { timestamps: true }
 )
