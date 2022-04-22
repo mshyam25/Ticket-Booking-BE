@@ -5,6 +5,7 @@ import { theatreRouter } from './routes/theatreRoutes.js'
 import { errorHandler, notFound } from './middleware/error.js'
 import cors from 'cors'
 import { seatRouter } from './routes/seatRoutes.js'
+import { userRouter } from './routes/userRoutes.js'
 dotenv.config()
 const app = express()
 connectToDB()
@@ -16,7 +17,7 @@ app.get('/', async (req, res) => {
 
 app.use('/theatres', theatreRouter)
 app.use('/seats', seatRouter)
-
+app.use('/users', userRouter)
 app.use(notFound)
 app.use(errorHandler)
 
