@@ -56,7 +56,7 @@ const userRegistration = expressAsyncHandler(async (request, response) => {
   const userExists = await User.findOne({ email })
 
   if (userExists) {
-    response.status(404)
+    response.status(500)
     throw new Error(
       'This Email id is registered with another user. Please use a different Email id.'
     )
@@ -93,24 +93,22 @@ const verifyUser = expressAsyncHandler(async (request, response) => {
   const validToken = await VerificationToken.findOne({ token: token })
   if (validToken) {
     const user = await User.findById(validToken._userId)
-    if (user.isVerified) {
-      response.status(200).send('User has been already verified. Please Login')
-    }
+    // if (user.isVerified) {
+    //   response.status(200).send('User has been already verified. Please Login')
+    // }
     user.isVerified = true
     await VerificationToken.deleteOne({ token })
     const updatedUser = await user.save()
-    response.status(500).send({
-      message: 'Account verified',
-      email: updatedUser.email,
-      signin: `http://${request.headers.host}/signin`,
-    })
+
+    response.redirect(`http://localhost:3000/signin`)
   } else {
     response.status(404)
-    response.send({
-      message:
-        'Your verification link may have expired. Please click to resend Verification Email',
-      resendlink: `http://${request.headers.host}/users/resendverificationmail/${email}`,
-    })
+    // response.send({
+    //   message:
+    //     'Your verification link may have expired. Please click to resend Verification Email',
+    //   resendlink: `http://${request.headers.host}/users/resendverificationmail/${email}`,
+    // })
+    response.redirect(`http://localhost:3000/verificationemail/${email}`)
   }
 })
 
@@ -120,22 +118,21 @@ const verifyUser = expressAsyncHandler(async (request, response) => {
 
 const resendVerificationMail = expressAsyncHandler(
   async (request, response) => {
+    console.log('Entered')
     const { email } = request.params
     const user = await User.findOne({ email: email })
     if (user) {
       if (user.isVerified) {
-        response.status(500).send('Your Account is already Verified')
+        response.status(201).send('Your Account is already Verified')
       } else {
-        console.log('Hello')
         if (verifyMail(user, request)) {
-          console.log('Hi')
           response
-            .status(500)
+            .status(200)
             .send('Verification email sent.Please check your inbox')
         }
       }
     } else {
-      response.status(404)
+      response.status(500)
       throw new Error('Invalid user')
     }
   }
