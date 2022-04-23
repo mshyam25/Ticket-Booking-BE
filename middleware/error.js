@@ -1,9 +1,7 @@
 const errorHandler = (error, request, response, next) => {
   const statusCode = response.statusCode === 200 ? 500 : response.statusCode
   response.status(statusCode)
-  response.json({
-    Error_Message: error.message,
-  })
+  response.json({ message: error.message })
 }
 
 const notFound = (request, response, next) => {

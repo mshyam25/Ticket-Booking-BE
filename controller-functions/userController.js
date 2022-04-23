@@ -1,7 +1,7 @@
 import User from '../mongoose-models/userModel.js'
 import { generateToken } from '../generateToken.js'
 import expressAsyncHandler from 'express-async-handler'
-import verifyMail from '../verifyMail.js'
+import { verifyMail, passwordReset } from '../verifyMail.js'
 import VerificationToken from '../mongoose-models/tokenModel.js'
 
 // Description : Get all users
@@ -89,25 +89,18 @@ const userRegistration = expressAsyncHandler(async (request, response) => {
 
 const verifyUser = expressAsyncHandler(async (request, response) => {
   const { email, token } = request.params
-  console.log(token)
+
   const validToken = await VerificationToken.findOne({ token: token })
   if (validToken) {
     const user = await User.findById(validToken._userId)
-    // if (user.isVerified) {
-    //   response.status(200).send('User has been already verified. Please Login')
-    // }
     user.isVerified = true
-    await VerificationToken.deleteOne({ token })
+    // await VerificationToken.deleteOne({ token })
+
     const updatedUser = await user.save()
 
     response.redirect(`http://localhost:3000/signin`)
   } else {
     response.status(404)
-    // response.send({
-    //   message:
-    //     'Your verification link may have expired. Please click to resend Verification Email',
-    //   resendlink: `http://${request.headers.host}/users/resendverificationmail/${email}`,
-    // })
     response.redirect(`http://localhost:3000/verificationemail/${email}`)
   }
 })
@@ -118,7 +111,6 @@ const verifyUser = expressAsyncHandler(async (request, response) => {
 
 const resendVerificationMail = expressAsyncHandler(
   async (request, response) => {
-    console.log('Entered')
     const { email } = request.params
     const user = await User.findOne({ email: email })
     if (user) {
@@ -144,35 +136,65 @@ const resendVerificationMail = expressAsyncHandler(
 const getUserByEmail = expressAsyncHandler(async (request, response) => {
   const { email } = request.body
   const user = await User.findOne({ email })
-  console.log(user)
+
   if (user) {
     response.status(200)
     response.send(user)
   } else {
     response.status(404)
-    throw new Error('Email does not belong to any user')
+    throw new Error('No Account found for this Email Id')
   }
 })
 
-// Description : Confirming User based on Security Question Response
-// Route :  POST /users/userconfirmation
+// Description : Sending Password Reset Link
+// Route :  GET /users/resetpasswordlink/:email
 // Access : Public
-const confirmUser = expressAsyncHandler(async (request, response) => {
-  const { securityAnswer, email } = request.body
+const resetPasswordLink = expressAsyncHandler(async (request, response) => {
+  const { email } = request.params
   const user = await User.findOne({ email })
-  if (user.securityQuestionAnswer === securityAnswer) {
-    response.status(200)
-    response.send('User Confirmed')
+  if (user) {
+    if (passwordReset(user, request)) {
+      response.status(200).send('Password Reset link is sent to your Email Id')
+    }
   } else {
     response.status(404)
-    throw new Error('Invalid Security Question Answer')
+    throw new Error('No Account found for this Email Id')
   }
 })
 
-// Description : Update Password
+// Description : Verifying Password Reset Link
+// Route :  GET /users/resetpassword/:email/:passwordResetToken
+// Access : Public
+
+const verifyResetLink = expressAsyncHandler(async (request, response) => {
+  const { passwordResetToken } = request.params
+  const validToken = await VerificationToken.findOne({
+    passwordResetToken: passwordResetToken,
+  })
+  if (validToken) {
+    const user = await User.findById(validToken._userId)
+    // if (user.isVerified) {
+    //   response.status(200).send('User has been already verified. Please Login')
+    // }
+    // validToken.passwordResetToken = ''
+    // const updatedToken = await validToken.save()
+
+    response.redirect(`http://localhost:3000/passwordreset/${user.email}`)
+  } else {
+    response.status(404)
+    // response.send({
+    //   message:
+    //     'Your Password Reset link may have expired. Please click to resend link.',
+    //   resendlink: `http://${request.headers.host}/users/resetpasswordlink/${email}`,
+    // })
+    response.redirect(`http://localhost:3000/signin`)
+  }
+})
+
+// Description : Reset Password
 // Route :  PUT /users/passwordreset
 // Access : Public
-const updatePassword = expressAsyncHandler(async (request, response) => {
+const resetPassword = expressAsyncHandler(async (request, response) => {
   const { email, password } = request.body
   const user = await User.findOne({ email })
   if (user) {
@@ -191,7 +213,8 @@ export {
   userRegistration,
   verifyUser,
   resendVerificationMail,
-  confirmUser,
-  updatePassword,
+  resetPasswordLink,
+  verifyResetLink,
   getUserByEmail,
+  resetPassword,
 }

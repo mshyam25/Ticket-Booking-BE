@@ -8,8 +8,13 @@ const tokenSchema = mongoose.Schema({
   },
   token: {
     type: String,
-    required: true,
+    default: '',
   },
+  passwordResetToken: {
+    type: String,
+    default: '',
+  },
+
   expireAt: {
     type: Date,
     default: Date.now,
