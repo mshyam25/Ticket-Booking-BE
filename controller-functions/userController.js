@@ -94,7 +94,8 @@ const verifyUser = expressAsyncHandler(async (request, response) => {
   if (validToken) {
     const user = await User.findById(validToken._userId)
     user.isVerified = true
-    // await VerificationToken.deleteOne({ token })
+    validToken.token = ''
+    await validToken.save()
 
     const updatedUser = await user.save()
 
@@ -176,9 +177,8 @@ const verifyResetLink = expressAsyncHandler(async (request, response) => {
     // if (user.isVerified) {
     //   response.status(200).send('User has been already verified. Please Login')
     // }
-    // validToken.passwordResetToken = ''
-    // const updatedToken = await validToken.save()
-
+    validToken.passwordResetToken = ''
+    const updatedToken = await validToken.save()
     response.redirect(`http://localhost:3000/passwordreset/${user.email}`)
   } else {
     response.status(404)
