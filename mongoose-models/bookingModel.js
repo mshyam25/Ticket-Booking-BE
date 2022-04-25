@@ -7,30 +7,22 @@ const bookingSchema = mongoose.Schema(
       required: true,
       ref: 'User',
     },
-    userName: {
-      type: String,
+    theatreId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'Theatre',
+    },
+    userName: { type: String, required: true },
+    userEmail: { type: String, required: true },
+    theatreName: { type: String, required: true },
+    movieName: { type: String, required: true },
+    date: { type: String, required: true },
+    showTime: { type: String, required: true },
+    seatCount: { type: Number, required: true },
+    seats: {
+      type: [String],
       required: true,
     },
-    bookingDetails: [
-      {
-        theatre: {
-          type: mongoose.Schema.Types.ObjectId,
-          required: true,
-          ref: 'Theatre',
-        },
-        date: { type: String, required: true },
-        showTime: { type: String, required: true },
-
-        qty: { type: Number, required: true },
-      },
-    ],
-
-    taxPrice: {
-      type: Number,
-      required: true,
-      default: 0.0,
-    },
-
     totalPrice: {
       type: Number,
       required: true,
@@ -42,4 +34,4 @@ const bookingSchema = mongoose.Schema(
 
 const Booking = mongoose.model('Booking', bookingSchema)
 
-export default Order
+export default Booking

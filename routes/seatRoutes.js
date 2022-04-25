@@ -1,5 +1,6 @@
 import express from 'express'
 import {
+  bookSeats,
   clearReservedSeats,
   confirmSeats,
 } from '../controller-functions/seatController.js'
@@ -11,3 +12,5 @@ export const seatRouter = router
 router.route('/confirmation').post(confirmSeats)
 
 router.route('/clearingreserved').post(clearReservedSeats)
+
+router.route('/bookseats').post(bookSeats)

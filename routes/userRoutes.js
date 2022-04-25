@@ -15,7 +15,7 @@ import { adminAuth, auth } from '../middleware/auth.js'
 const router = express.Router()
 
 // /users
-router.route('/').post(userRegistration).get(auth, adminAuth, getUsers)
+router.route('/').post(userRegistration).get(getUsers)
 router.route('/signin').post(userSignIn)
 router.route('/verification/:email/:token').get(verifyUser)
 router.route('/resendverificationmail/:email').get(resendVerificationMail)
