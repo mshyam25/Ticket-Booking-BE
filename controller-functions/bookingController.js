@@ -3,6 +3,7 @@ import { sendBookingDetails } from '../verifyMail.js'
 import User from '../mongoose-models/userModel.js'
 import Theatre from '../mongoose-models/theatreModel.js'
 import expressAsyncHandler from 'express-async-handler'
+import { request } from 'express'
 
 // Description : Creating a new Booking After Payment
 // Route :  POST /booking
@@ -42,4 +43,32 @@ const newBooking = expressAsyncHandler(async (request, response) => {
   }
 })
 
-export { newBooking }
+// Description : Creating a new Booking After Payment
+// Route :  GET /booking/:theatreId
+// Access : Private Auth Admin
+
+const bookingsOfTheatre = expressAsyncHandler(async (req, res) => {
+  const bookings = await Booking.find({ theatreId: req.params.id })
+  if (bookings.length > 0) {
+    res.status(200)
+    res.send(bookings)
+  } else {
+    throw new Error('No Bookings made for this theatre.')
+  }
+})
+
+// Description : Creating a new Booking After Payment
+// Route :  GET /booking/:userId
+// Access : Private Auth
+
+const bookingsOfUser = expressAsyncHandler(async (req, res) => {
+  const bookings = await Booking.find({ userId: req.params.id })
+  if (bookings.length > 0) {
+    res.status(200)
+    res.send(bookings)
+  } else {
+    throw new Error('No Bookings yet !')
+  }
+})
+
+export { newBooking, bookingsOfTheatre, bookingsOfUser }

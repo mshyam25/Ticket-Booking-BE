@@ -7,6 +7,7 @@ import VerificationToken from '../mongoose-models/tokenModel.js'
 // Description : Get all users
 // Route :  GET /users
 // Access : Private auth,adminAuth
+
 const getUsers = expressAsyncHandler(async (request, response) => {
   const users = await User.find({})
   if (users) {
