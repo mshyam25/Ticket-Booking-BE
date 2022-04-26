@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import { seatsData } from '../data/seatData.js'
+import { seatCreation } from '../data/seatData.js'
 import Moment from 'moment'
 const theatreSchema = mongoose.Schema({
   theatreName: {
@@ -104,6 +105,7 @@ theatreSchema.pre('save', async function (next) {
     this.isModified('runningDays')
   ) {
     console.log('Entering Seat creation')
+    seatCreation()
     const startDate = this.releaseDate
     const days = this.runningDays
     const showTimings = this.showTimings
@@ -120,6 +122,7 @@ theatreSchema.pre('save', async function (next) {
       date.setDate(startDate.getDate() + i)
       const formatedDate = Moment(date).format('YYYY-MM-DD')
       const seatsAvailable = { date: formatedDate, shows }
+      console.log(seatsAvailable)
       seatAvailability.push(seatsAvailable)
     }
     this.seatAvailability = seatAvailability
