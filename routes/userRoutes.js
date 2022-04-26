@@ -5,6 +5,7 @@ import {
   resendVerificationMail,
   resetPassword,
   resetPasswordLink,
+  updateUserDetails,
   userRegistration,
   userSignIn,
   verifyResetLink,
@@ -17,6 +18,7 @@ const router = express.Router()
 // /users
 router.route('/').post(userRegistration).get(getUsers)
 router.route('/signin').post(userSignIn)
+router.route('/profile').post(auth, getUserByEmail).put(auth, updateUserDetails)
 router.route('/verification/:email/:token').get(verifyUser)
 router.route('/resendverificationmail/:email').get(resendVerificationMail)
 router.route('/userbyemail').post(getUserByEmail)

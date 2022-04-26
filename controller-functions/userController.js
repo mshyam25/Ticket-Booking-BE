@@ -195,6 +195,7 @@ const verifyResetLink = expressAsyncHandler(async (request, response) => {
 // Description : Reset Password
 // Route :  PUT /users/passwordreset
 // Access : Public
+
 const resetPassword = expressAsyncHandler(async (request, response) => {
   const { email, password } = request.body
   const user = await User.findOne({ email })
@@ -202,6 +203,33 @@ const resetPassword = expressAsyncHandler(async (request, response) => {
     user.password = password
     const updatedUser = await user.save()
     response.send('Password Updated.Please signin with your new password')
+  } else {
+    response.status(404)
+    throw new Error('User not found')
+  }
+})
+
+// Description Update user details
+// Route       PUT /users/profile
+//@access      Private Auth
+
+const updateUserDetails = expressAsyncHandler(async (request, response) => {
+  const { name, email, password } = request.body
+  const user = await User.findById(request.user._id)
+  if (user) {
+    user.name = name || user.name
+    user.email = email || user.email
+    if (password) {
+      user.password = password
+    }
+    const updatedUser = await user.save()
+    response.send({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      isAdmin: updatedUser.isAdmin,
+      token: generateToken(updatedUser._id),
+    })
   } else {
     response.status(404)
     throw new Error('User not found')
@@ -218,4 +246,5 @@ export {
   verifyResetLink,
   getUserByEmail,
   resetPassword,
+  updateUserDetails,
 }
