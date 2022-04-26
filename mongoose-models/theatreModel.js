@@ -97,7 +97,13 @@ const theatreSchema = mongoose.Schema({
 })
 
 theatreSchema.pre('save', async function (next) {
-  if (this.seatAvailability.length < 1) {
+  if (
+    this.seatAvailability.length < 1 ||
+    this.isModified('releaseDate') ||
+    this.isModified('lastDate') ||
+    this.isModified('runningDays')
+  ) {
+    console.log('Entering Seat creation')
     const startDate = this.releaseDate
     const days = this.runningDays
     const showTimings = this.showTimings
@@ -119,6 +125,7 @@ theatreSchema.pre('save', async function (next) {
     this.seatAvailability = seatAvailability
     next()
   } else {
+    console.log('Didnt enter Seat creation')
     next()
   }
 })

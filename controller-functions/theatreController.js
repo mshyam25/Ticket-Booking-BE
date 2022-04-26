@@ -81,4 +81,55 @@ const addNewTheatre = expressAsyncHandler(async (request, response) => {
     }
   }
 })
-export { getAllTheatres, getTheatreById, addNewTheatre }
+
+// Description : Edit Theatre
+// Route :  PUT /theatres/:theatreid
+// Access : Private authAdmin
+
+const editTheatre = expressAsyncHandler(async (request, response) => {
+  const {
+    theatreArea,
+    theatreName,
+    releaseDate,
+    lastDate,
+    movieName,
+    poster,
+    cast,
+    director,
+    language,
+    runtime,
+    rating,
+    ticketPrice,
+    runningDays,
+    showTimings,
+  } = request.body
+
+  const theatre = await Theatre.findById(request.params.id)
+
+  if (theatre) {
+    theatre.theatreName = theatreName || theatre.theatreName
+    theatre.theatreArea = theatreArea || theatre.theatreArea
+    theatre.currentMovie.movieName = movieName
+    theatre.currentMovie.director = director
+    theatre.currentMovie.cast = cast
+    theatre.currentMovie.poster = poster
+    theatre.currentMovie.director = director
+    theatre.currentMovie.language = language
+    theatre.currentMovie.runtime = runtime
+    theatre.currentMovie.rating = rating
+    theatre.releaseDate = new Date(releaseDate)
+    theatre.lastDate = new Date(lastDate)
+    theatre.runningDays = runningDays
+    theatre.ticketPrice = ticketPrice
+    theatre.showTimings = showTimings
+
+    const updatedTheatre = await theatre.save()
+    if (updatedTheatre) {
+      response.send('Theatre Updated')
+    } else {
+      throw new Error('Theatre Update failed')
+    }
+  }
+})
+
+export { getAllTheatres, getTheatreById, addNewTheatre, editTheatre }
