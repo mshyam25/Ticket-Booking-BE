@@ -28,7 +28,7 @@ const getTheatreById = expressAsyncHandler(async (request, response) => {
 
 // Description : Add new Theatre
 // Route :  POST /theatres/addtheatre
-// Access : Public now but should change to private & admin
+// Access : Private authAdmin
 
 const addNewTheatre = expressAsyncHandler(async (request, response) => {
   const {
@@ -43,6 +43,7 @@ const addNewTheatre = expressAsyncHandler(async (request, response) => {
     language,
     runtime,
     rating,
+    ticketPrice,
     runningDays,
     showTimings,
   } = request.body
@@ -56,6 +57,7 @@ const addNewTheatre = expressAsyncHandler(async (request, response) => {
       theatreArea,
       runningDays,
       showTimings,
+      ticketPrice,
       releaseDate: new Date(releaseDate),
       lastDate: new Date(lastDate),
       currentMovie: {
@@ -71,7 +73,7 @@ const addNewTheatre = expressAsyncHandler(async (request, response) => {
     if (newTheatre) {
       response
         .status(200)
-        .send('New Theatre Added.Please check your theatreslist')
+        .send('New Theatre Added. Please check your theatreslist')
     } else {
       throw new Error(
         'Theatre cannot be added due to 1 or more errors. Please check the theatre data you are trying to add.'

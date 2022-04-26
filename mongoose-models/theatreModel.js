@@ -96,28 +96,32 @@ const theatreSchema = mongoose.Schema({
   ],
 })
 
-// theatreSchema.pre('save', async function (next) {
-//   const startDate = this.releaseDate
-//   const days = this.runningDays
-//   const showTimings = this.showTimings
-//   const seatAvailability = []
+theatreSchema.pre('save', async function (next) {
+  if (this.seatAvailability.length < 1) {
+    const startDate = this.releaseDate
+    const days = this.runningDays
+    const showTimings = this.showTimings
+    const seatAvailability = []
 
-//   for (let i = -1; i < days - 1; i++) {
-//     const shows = []
-//     for (let j = 0; j < showTimings.length; j++) {
-//       const showTiming = showTimings[j]
-//       const show = { showTiming }
-//       shows.push(show)
-//     }
-//     const date = new Date(startDate)
-//     date.setDate(startDate.getDate() + i)
-//     const formatedDate = Moment(date).format('YYYY-MM-DD')
-//     const seatsAvailable = { date: formatedDate, shows }
-//     seatAvailability.push(seatsAvailable)
-//   }
-//   this.seatAvailability = seatAvailability
-//   next()
-// })
+    for (let i = -1; i < days - 1; i++) {
+      const shows = []
+      for (let j = 0; j < showTimings.length; j++) {
+        const showTiming = showTimings[j]
+        const show = { showTiming }
+        shows.push(show)
+      }
+      const date = new Date(startDate)
+      date.setDate(startDate.getDate() + i)
+      const formatedDate = Moment(date).format('YYYY-MM-DD')
+      const seatsAvailable = { date: formatedDate, shows }
+      seatAvailability.push(seatsAvailable)
+    }
+    this.seatAvailability = seatAvailability
+    next()
+  } else {
+    next()
+  }
+})
 
 theatreSchema.pre('insertMany', async function (next, theatres) {
   theatres.map((t) => {
