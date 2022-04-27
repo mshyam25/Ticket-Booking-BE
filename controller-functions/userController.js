@@ -156,7 +156,11 @@ const resetPasswordLink = expressAsyncHandler(async (request, response) => {
   const user = await User.findOne({ email })
   if (user) {
     if (passwordReset(user, request)) {
-      response.status(200).send('Password Reset link is sent to your Email Id')
+      response
+        .status(200)
+        .send(
+          'Password Reset link is sent to your Email Id.Please check your email.'
+        )
     }
   } else {
     response.status(404)
