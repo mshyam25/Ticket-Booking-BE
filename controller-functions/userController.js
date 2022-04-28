@@ -100,10 +100,12 @@ const verifyUser = expressAsyncHandler(async (request, response) => {
 
     const updatedUser = await user.save()
 
-    response.redirect(`http://localhost:3000/signin`)
+    response.redirect(`https://tkt-booking-appl.netlify.app/signin`)
   } else {
     response.status(404)
-    response.redirect(`http://localhost:3000/verificationemail/${email}`)
+    response.redirect(
+      `https://tkt-booking-appl.netlify.app/verificationemail/${email}`
+    )
   }
 })
 
@@ -184,7 +186,9 @@ const verifyResetLink = expressAsyncHandler(async (request, response) => {
     // }
     validToken.passwordResetToken = ''
     const updatedToken = await validToken.save()
-    response.redirect(`http://localhost:3000/passwordreset/${user.email}`)
+    response.redirect(
+      `https://tkt-booking-appl.netlify.app/passwordreset/${user.email}`
+    )
   } else {
     response.status(404)
     // response.send({
@@ -192,7 +196,7 @@ const verifyResetLink = expressAsyncHandler(async (request, response) => {
     //     'Your Password Reset link may have expired. Please click to resend link.',
     //   resendlink: `http://${request.headers.host}/users/resetpasswordlink/${email}`,
     // })
-    response.redirect(`http://localhost:3000/signin`)
+    response.redirect(`https://tkt-booking-appl.netlify.app/signin`)
   }
 })
 
