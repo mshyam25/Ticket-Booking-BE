@@ -87,7 +87,7 @@ const clearReservedSeats = expressAsyncHandler(async (request, response) => {
       }
     }
   }
-  setTimeout(reservedSeatsClearance, 30000)
+  setTimeout(reservedSeatsClearance, 180000)
 })
 
 // Description : Marking the confirmed seats as reserved
